@@ -3,9 +3,9 @@
     <transition name="fade">
       <loader v-if="loader" />
     </transition>
-    <ul class="filters-container">
+    <ul id="filters-container" class="filters-container">
       <app-filter ref="filter" v-for="filter in filters" :key="`filter-${filter.slug}`" :filter-data="filter" @changed="getProducts()" />
-      <li>
+      <li class="reset-filters">
         <el-button @click="resetFilters()">Reset</el-button>
       </li>
     </ul>
@@ -13,6 +13,7 @@
       <product v-for="product in products" :key="product.id" :product-data="product" />
       <p v-if="products.length == 0" class="nothing-found">Nothing found</p>
     </div>
+    <pagination @changePage="page => { changePage(page) }" :active-page="activePage" />
   </div>
 </template>
 
@@ -20,14 +21,15 @@
 import Loader from './components/Loader'
 import Product from './components/Product'
 import AppFilter from './components/AppFilter'
+import Pagination from './components/Pagination'
 
 export default {
   name: 'app',
-  components: { Loader, Product, AppFilter },
+  components: { Loader, Product, AppFilter, Pagination },
   data () {
     return {
       loader: true,
-      // activeFilters: [],
+      activePage: 1,
       filters: [
         {
           slug: 'price',
@@ -41,9 +43,11 @@ export default {
           slug: 'per_page',
           name: 'Posts per page',
           options: [
+            {slug: '2'},
             {slug: '10'},
             {slug: '20'},
-            {slug: '30'}
+            {slug: '30'},
+            {slug: '40'},
           ]
         },
         {
@@ -53,6 +57,13 @@ export default {
             {slug: 'asc', name: 'A-Z'},
             {slug: 'desc', name: 'Z-A'}
           ]
+        },
+        {
+          slug: 'category',
+          name: 'Category',
+          options: ajax_options.product_categories.map(cat => {
+            return {slug: cat.slug, name: cat.name}
+          })
         },
         ...ajax_options.vue_wc_filter
       ]
@@ -75,6 +86,7 @@ export default {
       this.loader = true
       let url = new URL(ajax_options.shop_url)
       this.query.forEach(param => { url.searchParams.append(param.slug, param.value) })
+      if (this.activePage > 1) url.searchParams.append('page', this.activePage)
       this.$store.dispatch('getProducts', url.search)
         .then(() => {
           history.pushState({}, '', url.href)
@@ -86,7 +98,14 @@ export default {
       if (params.length > 0) {
         params.split('&').forEach(param => {
           const splitted = param.split('=')
-          this.setFilterOption(splitted[0], splitted[1])
+          switch(splitted[0]) {
+            case 'page':
+              this.activePage = splitted[1]
+              break
+            default:
+              this.setFilterOption(splitted[0], splitted[1])
+              break
+          }
         })
       }
       this.getProducts()
@@ -97,8 +116,23 @@ export default {
       })._data.value = option
     },
     resetFilters () {
-      this.$refs.filter.forEach(appFilter => { appFilter.value = '' })
+      this.$refs.filter.forEach(appFilter => {
+        appFilter.value = appFilter.filterData.slug !== 'per_page' ? '' : '10'
+      })
+      this.activePage = 1
       this.getProducts()
+    },
+    changePage (page) {
+      this.scrollTop()
+      this.activePage = page
+      this.getProducts()
+    },
+    scrollTop () {
+      let section = document.getElementById('filters-container')
+      window.scroll({
+        top: section.offsetTop - 40,
+        behavior: 'smooth'
+      })
     }
   },
   mounted () {
@@ -137,5 +171,8 @@ export default {
 }
 .el-select {
   margin-bottom: 1rem;
+}
+.reset-filters {
+  flex: 1 100%;
 }
 </style>

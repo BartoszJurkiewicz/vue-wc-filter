@@ -6,9 +6,13 @@ Vue.use(Vuex)
 
 const store = new Vuex.Store({
   state: {
+    data: {},
     products: []
   },
   mutations: {
+    SET_DATA: (state, data) => {
+      state.data = data
+    },
     SET_PRODUCTS: (state, products) => {
       state.products = products
     }
@@ -20,6 +24,7 @@ const store = new Vuex.Store({
         password: 'cs_eb1aabc80f9609713f2f86e9acf5f2b1e2c2fe58'
       }})
       .then(res => {
+        commit('SET_DATA', res.data.data)
         commit('SET_PRODUCTS', res.data.products)
       })
     }

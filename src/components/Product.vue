@@ -1,12 +1,10 @@
 <template>
   <el-card class="product" :class="`product-${productData.ID}`">
-    <a :href="productData.permalink" class="product__permalink">
-      <div class="product__thumbnail">
-        <img :src="productData.thumbnail || 'http://via.placeholder.com/350x350'" :alt="productData.title">
-      </div>
-      <rating :rating="productData.rating" />
-      <p class="product__title">{{productData.title}}</p>
-    </a>
+    <div class="product__thumbnail">
+      <img :src="productData.thumbnail || 'http://via.placeholder.com/350x350'" :alt="productData.title">
+    </div>
+    <rating :rating="productData.rating" />
+    <p class="product__title">{{productData.title}}</p>
     <div class="product__content">
       <template v-if="productData.hasOwnProperty('children')">
         <el-select v-model="selectedChildIndex" placeholder="Child product" clearable>
@@ -15,6 +13,9 @@
       </template>
       <product-group-price v-if="productData.hasOwnProperty('children')" :children="productData.children" :selected-child-index="selectedChildIndex" />
       <product-price v-else :product="productData"  />
+      <a :href="productData.permalink">
+        <el-button>View more</el-button>
+      </a>
     </div>
   </el-card>
 </template>
@@ -41,7 +42,6 @@ export default {
 }
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="scss" scoped>
 .product {
   flex: 0 calc(25% - 2rem);

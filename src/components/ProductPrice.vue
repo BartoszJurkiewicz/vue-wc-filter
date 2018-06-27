@@ -21,7 +21,3 @@ export default {
   props: [ 'product', 'selected-child-index' ]
 }
 </script>
-
-<style lang="scss" scoped>
-
-</style>
