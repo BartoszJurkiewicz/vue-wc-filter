@@ -1,5 +1,5 @@
 <template>
-  <div v-if="maxPages > 1" class="pagination-container">
+  <div class="pagination-container">
     <el-button v-if="activePage > 1" @click="$emit('changePage', activePage - 1)" icon="el-icon-arrow-left"></el-button>
     <el-button v-for="page in pages" :key="page" @click="$emit('changePage', page)" :type="activePage == page ? 'primary' : ''">{{page}}</el-button>
     <span>of {{maxPages}}</span>

@@ -13,7 +13,7 @@
       <product v-for="product in products" :key="product.id" :product-data="product" />
       <p v-if="products.length == 0" class="nothing-found">Nothing found</p>
     </div>
-    <pagination @changePage="page => { changePage(page) }" :active-page="activePage" />
+    <pagination v-if="maxPages > 1" @changePage="page => { changePage(page) }" :active-page="activePage" />
   </div>
 </template>
 
@@ -63,6 +63,8 @@ export default {
           name: 'Category',
           options: ajax_options.product_categories.map(cat => {
             return {slug: cat.slug, name: cat.name}
+          }).sort((a, b) => {
+            return a.name > b.name
           })
         },
         ...ajax_options.vue_wc_filter
@@ -70,6 +72,9 @@ export default {
     }
   },
   computed: {
+    maxPages () {
+      return this.$store.state.data.max_pages
+    },
     products () {
       return this.$store.state.products
     },

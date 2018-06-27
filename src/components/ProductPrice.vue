@@ -18,6 +18,11 @@
 <script>
 export default {
   name: 'ProductPrice',
-  props: [ 'product', 'selected-child-index' ]
+  props: {
+    product: {
+      type: Object,
+      required: true
+    }
+  }
 }
 </script>
