@@ -1,12 +1,12 @@
 import Vue from 'vue'
 import store from './store/'
 import App from './App.vue'
-import { MdField, MdMenu, MdList } from 'vue-material/dist/components'
-import 'vue-material/dist/vue-material.min.css'
+import { Select, Option, Card, Button } from 'element-ui'
 
-Vue.use(MdField)
-Vue.use(MdMenu)
-Vue.use(MdList)
+Vue.use(Select)
+Vue.use(Option)
+Vue.use(Card)
+Vue.use(Button)
 
 Vue.config.productionTip = false
 

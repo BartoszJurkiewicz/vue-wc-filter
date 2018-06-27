@@ -1,5 +1,5 @@
 <template>
-  <li class="product" :class="`product-${productData.ID}`">
+  <el-card class="product" :class="`product-${productData.ID}`">
     <a :href="productData.permalink" class="product__permalink">
       <div class="product__thumbnail">
         <img :src="productData.thumbnail || 'http://via.placeholder.com/350x350'" :alt="productData.title">
@@ -9,17 +9,14 @@
     </a>
     <div class="product__content">
       <template v-if="productData.hasOwnProperty('children')">
-        <md-field>
-          <label for="child-product">Child product</label>
-          <md-select v-model="selectedChildIndex" name="child-product" id="child-product">
-            <md-option v-for="(childProd, index) in productData.children" :key="childProd.id" :value="index">{{childProd.title}} - {{childProd.package}}</md-option>
-          </md-select>
-        </md-field>
+        <el-select v-model="selectedChildIndex" placeholder="Child product" clearable>
+          <el-option v-for="(childProd, index) in productData.children" :key="childProd.id" :label="`${childProd.title} - ${childProd.package}`" :value="index">{{childProd.title}} - {{childProd.package}}</el-option>
+        </el-select>
       </template>
       <product-group-price v-if="productData.hasOwnProperty('children')" :children="productData.children" :selected-child-index="selectedChildIndex" />
       <product-price v-else :product="productData"  />
     </div>
-  </li>
+  </el-card>
 </template>
 
 <script>
@@ -52,11 +49,6 @@ export default {
   padding: .6rem;
   margin: 1rem;
   box-sizing: border-box;
-  box-shadow: 4px 4px 10px 0px rgba(0, 0, 0, 0.15);
-  transition: .4s;
-  &:hover {
-    box-shadow: 8px 8px 20px 0px rgba(0, 0, 0, 0.15);
-  }
   .product__thumbnail {
     display: flex;
     justify-content: center;
